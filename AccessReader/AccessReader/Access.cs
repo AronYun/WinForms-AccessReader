@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Data.OleDb;
 using System.Data;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace AccessReader
 {
-    class Access
+    public class Access
     {
         public bool State { get; set; }                  //連接狀態
         public bool QueryState { get; set; }             //查詢狀態
         public string Exception { get; set; }            //連接錯誤訊息
         public string QueryException { get; set; }       //查詢錯誤訊息
         public string ExecuteException { get; set; }     //執行錯誤訊息
-        public List<string> Tables { get; set; }         //連接DB的所有Table名稱
+        public new object[] Tables { get; set; }         //連接DB的所有Table名稱
         private OleDbConnection Connection { get; set; } //連接物件
 
         //Access資料庫：連接
@@ -26,7 +25,7 @@ namespace AccessReader
                 using (this.Connection = new OleDbConnection(connectionString))
                 {
                     if (this.Connection.State != ConnectionState.Open) { this.Connection.Open(); }
-                    this.Tables = Connection.GetSchema("Tables").AsEnumerable().Select(r => r.Field<string>("TABLE_NAME")).ToList();
+                    this.Tables = Connection.GetSchema("Tables").Rows.OfType<DataRow>().Select(row => Convert.ToString(row["TABLE_NAME"])).ToArray();
                 }
                 this.State = true;
             }
