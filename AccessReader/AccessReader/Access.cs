@@ -22,11 +22,10 @@ namespace AccessReader
 
             try
             {
-                using (this.Connection = new OleDbConnection(connectionString))
-                {
-                    if (this.Connection.State != ConnectionState.Open) { this.Connection.Open(); }
-                    this.Tables = Connection.GetSchema("Tables").Rows.OfType<DataRow>().Select(row => Convert.ToString(row["TABLE_NAME"])).ToArray();
-                }
+                this.Connection = new OleDbConnection();
+                this.Connection.ConnectionString = connectionString;
+                if (this.Connection.State != ConnectionState.Open) { this.Connection.Open(); }
+                this.Tables = Connection.GetSchema("Tables").Rows.OfType<DataRow>().Select(row => Convert.ToString(row["TABLE_NAME"])).ToArray();
                 this.State = true;
             }
             catch (Exception e)

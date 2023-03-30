@@ -141,6 +141,7 @@
             this.execute.TabIndex = 5;
             this.execute.Text = "執行";
             this.execute.UseVisualStyleBackColor = true;
+            this.execute.Click += new System.EventHandler(this.execute_Click);
             // 
             // Reader
             // 
@@ -155,6 +156,7 @@
             this.Controls.Add(this.browse);
             this.Name = "Reader";
             this.Text = "AccessReader";
+            this.Shown += new System.EventHandler(this.Reader_Shown);
             this.tabControl.ResumeLayout(false);
             this.resultTab.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.table)).EndInit();
