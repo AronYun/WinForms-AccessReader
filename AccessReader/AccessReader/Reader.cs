@@ -12,33 +12,56 @@ namespace AccessReader
 {
     public partial class Reader : Form
     {
+        #region 變數
         public Access accessConnection { get; set; } = null; //宣告AccessConnection
+        private float X = 854; //視窗寬度
+        private float Y = 480; //視窗長度
+        #endregion
 
+        #region 視窗事件
         public Reader()
         {
             InitializeComponent();
         }
 
+        //［視窗］開啟中事件
+        private void Reader_Load(object sender, EventArgs e)
+        {
+            X = this.Width; //取得視窗實際寬度
+            Y = this.Height; //取得視窗實際長度
+            size.SetTag(this); //將控制項的寬，高，左邊距，頂邊距和字體大小暫存到tag屬性中
+        }
+
         //［視窗］開啟後事件
         private void Reader_Shown(object sender, EventArgs e)
         {
-            this.execute.Enabled = false; //關閉［執行］按鈕
-            this.filePath.Text = string.Empty; //清除filePath元件資料
-            this.tableList.Items.Clear(); //清除tableList元件資料
-            this.sqlScript.Text = string.Empty; //清除sqlScript元件資料
-            this.table.DataSource = null; // 清空table資料來源
-            this.table.Rows.Clear(); // 清空table所有列
-            this.message.Text = string.Empty; //清除message元件資料
-            this.tabControl.SelectedTab = this.resultTab; //顯示〔結果］頁籤
+            this.accessConnection = null;                  //AccessConnection指向null
+            this.execute.Enabled = false;                  //關閉［執行］按鈕
+            this.filePath.Text = string.Empty;             //清除filePath元件資料
+            this.tableList.Items.Clear();                  //清除tableList元件資料
+            this.sqlScript.Text = string.Empty;            //清除sqlScript元件資料
+            this.table.DataSource = null;                  //清空table資料來源
+            this.table.Rows.Clear();                       //清空table所有列
+            this.message.Text = string.Empty;              //清除message元件資料
+            this.tabControl.SelectedTab = this.resultTab;  //顯示〔結果］頁籤
         }
+
+        //［視窗］縮放事件
+        private void Reader_Resize(object sender, EventArgs e)
+        {
+            float newx = (this.Width) / X; //視窗寬度係數
+            float newy = (this.Height) / Y; //視窗長度係數
+            size.SetControls(newx, newy, this); //根據窗體大小調整控制項大小
+        }
+        #endregion
 
         #region 元件事件
         //［執行］按鈕事件
         private void execute_Click(object sender, EventArgs e)
         {
-            string SQL = this.sqlScript.Text.Trim(); //SQL語法
-            string type = string.Empty; //執行類型
-            int spaceIndex = 0; //半形空白位置
+            string SQL = this.sqlScript.Text.Trim();  //SQL語法
+            string type = string.Empty;               //執行類型
+            int spaceIndex = 0;                       //半形空白位置
 
             if (accessConnection == null || !accessConnection.State) //如果資料庫未連接或資料庫連接失敗
             {
@@ -51,9 +74,9 @@ namespace AccessReader
                 return;
             }
 
-            this.table.DataSource = null; // 清空table資料來源
-            this.table.Rows.Clear(); // 清空table所有列 
-            this.message.Text = string.Empty; //清除message元件資料
+            this.table.DataSource = null;      //清空table資料來源
+            this.table.Rows.Clear();           //清空table所有列 
+            this.message.Text = string.Empty;  //清除message元件資料
 
             SQL = SQL.Replace(Environment.NewLine, " "); //SQL語法(換行改半形空白)
             spaceIndex = SQL.IndexOf(" "); //半形空白位置
@@ -77,7 +100,7 @@ namespace AccessReader
                         {
                             executeMessage = $"執行Access資料庫語法：{SQL}"; //成功訊息
                         }
-                        else
+                        else //如果按下「取消」
                         {
                             executeMessage = $"執行{type}語法時發生錯誤：\n{accessConnection.ExecuteException}"; //失敗訊息
                             accessConnection.ExecuteException = string.Empty; //清空AccessConnection執行錯誤訊息
@@ -93,27 +116,27 @@ namespace AccessReader
                     string queryMessage = string.Empty; //查詢訊息
                     if (accessConnection.QueryState) //判斷查詢狀態
                     {
-                        queryMessage = $"執行Access資料庫語法：{SQL}";
+                        queryMessage = $"執行Access資料庫語法：{SQL}"; //成功訊息
                         this.tabControl.SelectedTab = this.resultTab; //顯示〔結果］頁籤
                     }
                     else
                     {
-                        queryMessage = $"執行{type}語法時發生錯誤：\n{accessConnection.QueryException}";
-                        accessConnection.QueryException = string.Empty;
-                        MessageBox.Show(queryMessage, "錯誤訊息", MessageBoxButtons.OK, MessageBoxIcon.Error); //跳出提示視窗
+                        queryMessage = $"執行{type}語法時發生錯誤：\n{accessConnection.QueryException}"; //失敗訊息
+                        accessConnection.QueryException = string.Empty; //清空AccessConnection查詢錯誤訊息
+                        MessageBox.Show(queryMessage, "錯誤訊息", MessageBoxButtons.OK, MessageBoxIcon.Error); //跳出錯誤訊息視窗
                         this.tabControl.SelectedTab = this.messageTab; //顯示〔訊息］頁籤
                     }
-                    this.message.Text = queryMessage;
+                    this.message.Text = queryMessage; //將查詢訊息顯示於message元件上
                     break;
-                default:
-                    MessageBox.Show("功能開發中！", "提示訊息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                default: //其他
+                    MessageBox.Show("功能開發中！", "提示訊息", MessageBoxButtons.OK, MessageBoxIcon.Information); //跳出提示訊息視窗
                     break;
             }
 
         }
 
         //［瀏覽］按鈕事件
-        private void browse_Click(object sender, EventArgs e)
+        private void connect_Click(object sender, EventArgs e)
         {
             OpenFileDialog browser = new OpenFileDialog(); //宣告開啟檔案視窗
             browser.Title = "開啟檔案"; //開啟檔案視窗-名稱設定
