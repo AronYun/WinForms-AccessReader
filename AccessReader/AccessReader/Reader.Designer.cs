@@ -28,35 +28,39 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.browse = new System.Windows.Forms.Button();
+            this.connect = new System.Windows.Forms.Button();
             this.filePath = new System.Windows.Forms.TextBox();
             this.tableList = new System.Windows.Forms.ListBox();
             this.sqlScript = new System.Windows.Forms.TextBox();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.resultTab = new System.Windows.Forms.TabPage();
+            this.table = new System.Windows.Forms.DataGridView();
             this.messageTab = new System.Windows.Forms.TabPage();
             this.message = new System.Windows.Forms.TextBox();
-            this.table = new System.Windows.Forms.DataGridView();
+            this.execute = new System.Windows.Forms.Button();
+            this.unconnect = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.resultTab.SuspendLayout();
-            this.messageTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.table)).BeginInit();
+            this.messageTab.SuspendLayout();
             this.SuspendLayout();
             // 
-            // browse
+            // connect
             // 
-            this.browse.Location = new System.Drawing.Point(13, 11);
-            this.browse.Name = "browse";
-            this.browse.Size = new System.Drawing.Size(51, 23);
-            this.browse.TabIndex = 0;
-            this.browse.Text = "瀏覽...";
-            this.browse.UseVisualStyleBackColor = true;
+            this.connect.Location = new System.Drawing.Point(13, 11);
+            this.connect.Name = "connect";
+            this.connect.Size = new System.Drawing.Size(75, 23);
+            this.connect.TabIndex = 0;
+            this.connect.Text = "連線";
+            this.connect.UseVisualStyleBackColor = true;
+            this.connect.Click += new System.EventHandler(this.connect_Click);
             // 
             // filePath
             // 
-            this.filePath.Location = new System.Drawing.Point(70, 12);
+            this.filePath.Location = new System.Drawing.Point(200, 12);
             this.filePath.Name = "filePath";
-            this.filePath.Size = new System.Drawing.Size(124, 22);
+            this.filePath.ReadOnly = true;
+            this.filePath.Size = new System.Drawing.Size(561, 22);
             this.filePath.TabIndex = 1;
             // 
             // tableList
@@ -65,16 +69,18 @@
             this.tableList.ItemHeight = 12;
             this.tableList.Location = new System.Drawing.Point(13, 43);
             this.tableList.Name = "tableList";
-            this.tableList.Size = new System.Drawing.Size(181, 424);
+            this.tableList.Size = new System.Drawing.Size(179, 424);
             this.tableList.TabIndex = 2;
+            this.tableList.DoubleClick += new System.EventHandler(this.tableList_DoubleClick);
+            this.tableList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tableList_MouseUp);
             // 
             // sqlScript
             // 
-            this.sqlScript.Location = new System.Drawing.Point(200, 12);
+            this.sqlScript.Location = new System.Drawing.Point(200, 43);
             this.sqlScript.Multiline = true;
             this.sqlScript.Name = "sqlScript";
             this.sqlScript.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.sqlScript.Size = new System.Drawing.Size(642, 214);
+            this.sqlScript.Size = new System.Drawing.Size(642, 183);
             this.sqlScript.TabIndex = 3;
             this.sqlScript.WordWrap = false;
             // 
@@ -99,6 +105,15 @@
             this.resultTab.Text = "結果";
             this.resultTab.UseVisualStyleBackColor = true;
             // 
+            // table
+            // 
+            this.table.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.table.Location = new System.Drawing.Point(6, 6);
+            this.table.Name = "table";
+            this.table.RowTemplate.Height = 24;
+            this.table.Size = new System.Drawing.Size(622, 198);
+            this.table.TabIndex = 0;
+            // 
             // messageTab
             // 
             this.messageTab.Controls.Add(this.message);
@@ -119,32 +134,48 @@
             this.message.Size = new System.Drawing.Size(622, 198);
             this.message.TabIndex = 0;
             // 
-            // table
+            // execute
             // 
-            this.table.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.table.Location = new System.Drawing.Point(6, 6);
-            this.table.Name = "table";
-            this.table.RowTemplate.Height = 24;
-            this.table.Size = new System.Drawing.Size(622, 198);
-            this.table.TabIndex = 0;
+            this.execute.Location = new System.Drawing.Point(767, 11);
+            this.execute.Name = "execute";
+            this.execute.Size = new System.Drawing.Size(75, 23);
+            this.execute.TabIndex = 5;
+            this.execute.Text = "執行";
+            this.execute.UseVisualStyleBackColor = true;
+            this.execute.Click += new System.EventHandler(this.execute_Click);
+            // 
+            // unconnect
+            // 
+            this.unconnect.Location = new System.Drawing.Point(117, 11);
+            this.unconnect.Name = "unconnect";
+            this.unconnect.Size = new System.Drawing.Size(75, 23);
+            this.unconnect.TabIndex = 6;
+            this.unconnect.Text = "中斷連線";
+            this.unconnect.UseVisualStyleBackColor = true;
+            this.unconnect.Click += new System.EventHandler(this.Reader_Shown);
             // 
             // Reader
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(854, 480);
+            this.Controls.Add(this.unconnect);
+            this.Controls.Add(this.execute);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.sqlScript);
             this.Controls.Add(this.tableList);
             this.Controls.Add(this.filePath);
-            this.Controls.Add(this.browse);
+            this.Controls.Add(this.connect);
             this.Name = "Reader";
             this.Text = "AccessReader";
+            this.Load += new System.EventHandler(this.Reader_Load);
+            this.Shown += new System.EventHandler(this.Reader_Shown);
+            this.Resize += new System.EventHandler(this.Reader_Resize);
             this.tabControl.ResumeLayout(false);
             this.resultTab.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.table)).EndInit();
             this.messageTab.ResumeLayout(false);
             this.messageTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.table)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -152,7 +183,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button browse;
+        private System.Windows.Forms.Button connect;
         private System.Windows.Forms.TextBox filePath;
         private System.Windows.Forms.ListBox tableList;
         private System.Windows.Forms.TextBox sqlScript;
@@ -161,6 +192,8 @@
         private System.Windows.Forms.TabPage messageTab;
         private System.Windows.Forms.DataGridView table;
         private System.Windows.Forms.TextBox message;
+        private System.Windows.Forms.Button execute;
+        private System.Windows.Forms.Button unconnect;
     }
 }
 
